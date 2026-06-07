@@ -1,501 +1,117 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💌 Mon Invitation</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --pink: #F5A8C0; --pink-dark: #E07A9E; --pink-light: #FDF0F5;
-    --rose: #C94B7A; --cream: #FFF8F2; --text: #2A1520;
-    --muted: #8A6272; --border: #EDD5E0;
-  }
-  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Une question importante</title>
+    <meta
+      name="description"
+      content="Une petite invitation interactive pour organiser un date avec Simon."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-  /* ── NAV ── */
-  nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 24px; background: #fff;
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 100;
-  }
-  .nav-logo { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--rose); }
-  .nav-tabs { display: flex; gap: 4px; }
-  .tab-btn {
-    padding: 8px 18px; border-radius: 20px; border: 1.5px solid transparent;
-    background: none; cursor: pointer; font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 500; color: var(--muted); transition: all .2s;
-  }
-  .tab-btn.active { background: var(--rose); color: #fff; border-color: var(--rose); }
+  <body>
+    <main class="app-shell">
+      <section id="screen-intro" class="screen screen-active intro-card" aria-labelledby="intro-title">
+        <div class="badge">Invitation officielle de Simon</div>
+        <h1 id="intro-title">Souhaites-tu aller en date avec moi&nbsp;?</h1>
+        <p class="intro-subtitle">
+          Question simple. Réponse encore plus simple. Le bouton “Non” est fourni uniquement pour la décoration.
+        </p>
 
-  /* ── EDITOR ── */
-  #editor { padding: 28px 24px; display: flex; flex-direction: column; gap: 22px; max-width: 600px; margin: 0 auto; }
-  .section-title { font-size: 11px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: -10px; }
-  .field-group { display: flex; flex-direction: column; gap: 7px; }
-  label { font-size: 13px; font-weight: 500; color: var(--muted); }
-  input[type=text], textarea {
-    padding: 11px 15px; border: 1.5px solid var(--border); border-radius: 12px;
-    font-family: 'DM Sans', sans-serif; font-size: 15px; background: #fff; color: var(--text);
-    outline: none; transition: border-color .2s; width: 100%;
-  }
-  input[type=text]:focus, textarea:focus { border-color: var(--pink-dark); }
-  textarea { resize: vertical; min-height: 80px; }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        <div class="button-row" id="choice-zone">
+          <button id="yes-button" class="primary-button" type="button">Oui</button>
+          <button id="no-button" class="secondary-button" type="button">Non</button>
+        </div>
 
-  .theme-grid { display: flex; gap: 10px; flex-wrap: wrap; }
-  .theme-opt {
-    padding: 9px 18px; border-radius: 22px; border: 1.5px solid var(--border);
-    background: #fff; cursor: pointer; font-size: 13px; font-weight: 500;
-    transition: all .15s; color: var(--text);
-  }
-  .theme-opt.selected { border-color: var(--rose); background: var(--rose); color: #fff; }
+        <p id="no-hint" class="no-hint" aria-live="polite"></p>
+      </section>
 
-  .emoji-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-  .emoji-opt {
-    width: 44px; height: 44px; border-radius: 10px;
-    border: 1.5px solid var(--border); background: #fff;
-    cursor: pointer; font-size: 22px;
-    display: flex; align-items: center; justify-content: center; transition: all .15s;
-  }
-  .emoji-opt.selected { border-color: var(--rose); background: var(--pink-light); transform: scale(1.1); }
+      <section id="screen-planner" class="screen planner-card" aria-labelledby="planner-title">
+        <div class="badge">Très bon choix</div>
+        <h1 id="planner-title">Qu’est-ce que tu veux faire&nbsp;?</h1>
+        <p class="intro-subtitle">
+          Choisis l’activité, la date et l’horaire. Je m’occupe du reste.
+        </p>
 
-  .divider { border: none; border-top: 1px solid var(--border); }
+        <form id="date-form" class="date-form">
+          <fieldset>
+            <legend>Activité</legend>
+            <div class="activity-grid" id="activity-grid" role="radiogroup" aria-label="Choix de l'activité">
+              <button class="activity-card" type="button" data-activity="Cinéma" aria-pressed="false">
+                <span class="activity-emoji">🎬</span>
+                <span>Cinéma</span>
+              </button>
+              <button class="activity-card" type="button" data-activity="Restaurant" aria-pressed="false">
+                <span class="activity-emoji">🍝</span>
+                <span>Restaurant</span>
+              </button>
+              <button class="activity-card" type="button" data-activity="Running" aria-pressed="false">
+                <span class="activity-emoji">🏃‍♀️</span>
+                <span>Running</span>
+              </button>
+              <button class="activity-card" type="button" data-activity="Café" aria-pressed="false">
+                <span class="activity-emoji">☕</span>
+                <span>Café</span>
+              </button>
+              <button class="activity-card" type="button" data-activity="Un verre" aria-pressed="false">
+                <span class="activity-emoji">🍸</span>
+                <span>Un verre</span>
+              </button>
+            </div>
+          </fieldset>
 
-  .preview-btn {
-    padding: 15px; background: var(--rose); color: #fff; border: none; border-radius: 14px;
-    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500; cursor: pointer;
-    transition: transform .15s, background .15s; letter-spacing: .02em;
-  }
-  .preview-btn:hover { background: #B03D6A; transform: translateY(-2px); }
-  .preview-btn:active { transform: translateY(0); }
+          <div class="form-grid">
+            <label>
+              <span>Ton prénom <small>(optionnel)</small></span>
+              <input id="guest-name" name="guestName" type="text" placeholder="Ex : Léa" autocomplete="given-name" />
+            </label>
 
-  /* ── INVITE ── */
-  #invite { display: none; }
-  .invite-wrap {
-    min-height: calc(100vh - 57px);
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 40px 20px; position: relative; overflow: hidden;
-  }
-  .invite-wrap.theme-rose    { background: linear-gradient(135deg, #FFF0F5 0%, #FFD6E8 100%); }
-  .invite-wrap.theme-night   { background: linear-gradient(135deg, #1A0A1E 0%, #2D0F3D 100%); }
-  .invite-wrap.theme-sunset  { background: linear-gradient(135deg, #FFF3E6 0%, #FFD9B8 100%); }
-  .invite-wrap.theme-garden  { background: linear-gradient(135deg, #F0FFF4 0%, #C8F5D8 100%); }
-  .invite-wrap.theme-ocean   { background: linear-gradient(135deg, #EBF8FF 0%, #BAE8FF 100%); }
+            <label>
+              <span>Date</span>
+              <input id="date-input" name="date" type="date" required />
+            </label>
 
-  .invite-card {
-    max-width: 440px; width: 100%; border-radius: 28px;
-    padding: 44px 40px 36px; text-align: center;
-    box-shadow: 0 24px 80px rgba(0,0,0,.13);
-    position: relative; z-index: 2;
-    animation: cardIn .6s cubic-bezier(.22,.68,0,1.2);
-  }
-  @keyframes cardIn { from { transform: translateY(30px) scale(.95); opacity: 0; } to { transform: none; opacity: 1; } }
+            <label>
+              <span>Horaire</span>
+              <input id="time-input" name="time" type="time" min="08:00" max="23:30" step="900" required />
+            </label>
+          </div>
 
-  .theme-rose   .invite-card { background: #fff; }
-  .theme-night  .invite-card { background: #2A1040; }
-  .theme-sunset .invite-card { background: #FFF9F0; }
-  .theme-garden .invite-card { background: #F6FFF9; }
-  .theme-ocean  .invite-card { background: #F0FAFF; }
+          <label class="wide-label">
+            <span>Petit message <small>(optionnel)</small></span>
+            <textarea
+              id="note-input"
+              name="note"
+              rows="3"
+              placeholder="Ex : uniquement si tu promets de choisir un bon restaurant."
+            ></textarea>
+          </label>
 
-  .invite-emoji  { font-size: 64px; margin-bottom: 18px; display: block; }
-  .invite-badge  {
-    display: inline-block; padding: 4px 14px; border-radius: 20px;
-    font-size: 11px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
-    margin-bottom: 14px;
-  }
-  .theme-rose   .invite-badge { background: var(--pink-light); color: var(--rose); }
-  .theme-night  .invite-badge { background: rgba(255,255,255,.12); color: #D8AAFF; }
-  .theme-sunset .invite-badge { background: #FFF0DC; color: #C06820; }
-  .theme-garden .invite-badge { background: #E0FFF0; color: #1A7A40; }
-  .theme-ocean  .invite-badge { background: #DCF0FF; color: #0A72B0; }
+          <div id="summary-box" class="summary-box" hidden></div>
+          <p id="form-error" class="form-error" aria-live="polite"></p>
 
-  .invite-question {
-    font-family: 'Playfair Display', serif; font-size: 30px; line-height: 1.3; margin-bottom: 12px;
-  }
-  .theme-night .invite-question { color: #F0D0FF; }
+          <button id="submit-button" class="primary-button full-button" type="submit">
+            Valider notre date
+          </button>
+        </form>
+      </section>
 
-  .invite-message { font-size: 16px; line-height: 1.7; margin-bottom: 24px; }
-  .theme-rose   .invite-message { color: #7A4A5A; }
-  .theme-night  .invite-message { color: #C8A0E8; }
-  .theme-sunset .invite-message { color: #8A5030; }
-  .theme-garden .invite-message { color: #2A6A40; }
-  .theme-ocean  .invite-message { color: #1A5A80; }
+      <section id="screen-success" class="screen success-card" aria-labelledby="success-title">
+        <img class="dance-gif" src="assets/dance.gif" alt="Personnage qui danse de joie" />
+        <div class="badge">Confirmation envoyée</div>
+        <h1 id="success-title">Je savais que tu dirais oui</h1>
+        <p class="intro-subtitle">
+          Voilà le récapitulatif officiel de notre futur date.
+        </p>
+        <div id="final-summary" class="summary-box success-summary"></div>
+        <button id="restart-button" class="secondary-button restart-button" type="button">
+          Modifier la réponse
+        </button>
+      </section>
+    </main>
 
-  .details-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
-  .detail-chip {
-    display: flex; align-items: center; gap: 7px;
-    padding: 8px 16px; border-radius: 22px; font-size: 14px; font-weight: 500;
-  }
-  .theme-rose   .detail-chip { background: var(--pink-light); color: var(--rose); }
-  .theme-night  .detail-chip { background: rgba(255,255,255,.1); color: #E0BAFF; }
-  .theme-sunset .detail-chip { background: #FFF0DC; color: #C06820; }
-  .theme-garden .detail-chip { background: #DCF5E8; color: #1A7A40; }
-  .theme-ocean  .detail-chip { background: #DCF0FF; color: #0A72B0; }
-
-  /* Buttons zone */
-  .btn-zone { position: relative; min-height: 80px; display: flex; align-items: center; justify-content: center; gap: 16px; }
-
-  .btn-yes {
-    padding: 17px 40px; border-radius: 50px; border: none; cursor: pointer;
-    font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 18px;
-    color: #fff; transition: transform .15s, font-size .3s, padding .3s;
-    box-shadow: 0 6px 24px rgba(0,0,0,.15);
-  }
-  .theme-rose   .btn-yes { background: var(--rose); }
-  .theme-night  .btn-yes { background: #9B30E0; }
-  .theme-sunset .btn-yes { background: #E06820; }
-  .theme-garden .btn-yes { background: #1A8A48; }
-  .theme-ocean  .btn-yes { background: #0A72B0; }
-  .btn-yes:hover { transform: scale(1.07); }
-  .btn-yes:active { transform: scale(.97); }
-
-  .btn-no {
-    padding: 12px 24px; border-radius: 50px; border: 1.5px solid var(--border);
-    background: rgba(255,255,255,.7); backdrop-filter: blur(4px);
-    cursor: pointer; font-family: 'DM Sans', sans-serif;
-    font-weight: 400; font-size: 15px; color: var(--muted);
-    white-space: nowrap; transition: opacity .3s;
-  }
-  .theme-night .btn-no { border-color: rgba(255,255,255,.2); color: #B090D0; background: rgba(255,255,255,.07); }
-
-  .escape-msg { font-size: 12px; color: var(--muted); position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%); white-space: nowrap; opacity: .7; }
-  .theme-night .escape-msg { color: #A080C0; }
-
-  .yes-msg {
-    font-family: 'Playfair Display', serif; font-size: 24px; font-style: italic;
-    animation: popIn .5s cubic-bezier(.22,.68,0,1.4);
-  }
-  .theme-rose   .yes-msg { color: var(--rose); }
-  .theme-night  .yes-msg { color: #D890FF; }
-  .theme-sunset .yes-msg { color: #D06020; }
-  .theme-garden .yes-msg { color: #1A8A48; }
-  .theme-ocean  .yes-msg { color: #0A72B0; }
-
-  @keyframes popIn { from { transform: scale(.4); opacity: 0; } 70% { transform: scale(1.12); } to { transform: scale(1); opacity: 1; } }
-
-  /* Floating hearts */
-  .floating-hearts { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
-  .fh { position: absolute; font-size: 20px; animation: floatUp linear infinite; opacity: .18; }
-  @keyframes floatUp {
-    0%   { transform: translateY(100vh) rotate(-8deg); opacity: .18; }
-    50%  { opacity: .32; }
-    100% { transform: translateY(-80px) rotate(8deg); opacity: 0; }
-  }
-
-  /* Confetti */
-  .confetti-piece {
-    position: fixed; pointer-events: none;
-    animation: confettiFall ease-in forwards;
-    z-index: 9999;
-  }
-  @keyframes confettiFall {
-    0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-  }
-
-  /* Back button */
-  .back-btn {
-    position: absolute; top: 16px; left: 16px;
-    padding: 8px 16px; border-radius: 20px; border: 1.5px solid rgba(255,255,255,.4);
-    background: rgba(255,255,255,.3); backdrop-filter: blur(8px);
-    cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text);
-    z-index: 10; transition: background .2s;
-  }
-  .theme-night .back-btn { color: #E0C0FF; border-color: rgba(255,255,255,.2); }
-  .back-btn:hover { background: rgba(255,255,255,.5); }
-
-  /* No counter */
-  .no-counter {
-    position: absolute; top: 12px; right: 16px; font-size: 12px;
-    opacity: .5; font-weight: 500;
-  }
-  .theme-night .no-counter { color: #C0A0E0; }
-
-  /* Responsive */
-  @media (max-width: 480px) {
-    .invite-card { padding: 32px 24px 28px; }
-    .invite-question { font-size: 24px; }
-    nav { padding: 12px 16px; }
-    .nav-logo { font-size: 18px; }
-  }
-</style>
-</head>
-<body>
-
-<nav>
-  <span class="nav-logo">💌 DateInvite</span>
-  <div class="nav-tabs">
-    <button class="tab-btn active" id="tab-editor" onclick="switchTab('editor')">✏️ Éditer</button>
-    <button class="tab-btn" id="tab-invite" onclick="switchTab('invite')">Aperçu 💌</button>
-  </div>
-</nav>
-
-<!-- ═══════════ EDITOR ═══════════ -->
-<div id="editor">
-
-  <p class="section-title">👤 Toi</p>
-
-  <div class="field-group">
-    <label>Ton prénom</label>
-    <input type="text" id="from" placeholder="Ex: Thomas" value="Thomas">
-  </div>
-
-  <hr class="divider">
-  <p class="section-title">💬 Le message</p>
-
-  <div class="field-group">
-    <label>Question principale</label>
-    <input type="text" id="question" placeholder="Ex: Tu veux aller prendre un verre avec moi ?" value="Tu veux aller prendre un verre avec moi ?">
-  </div>
-  <div class="field-group">
-    <label>Message personnalisé</label>
-    <textarea id="message" placeholder="Un petit mot qui vient du cœur...">J'ai pensé à toi en voyant ce café — je crois qu'il te plairait autant qu'il me plaît te voir sourire.</textarea>
-  </div>
-
-  <hr class="divider">
-  <p class="section-title">📍 Les détails du date</p>
-
-  <div class="row2">
-    <div class="field-group">
-      <label>Lieu</label>
-      <input type="text" id="place" placeholder="Ex: Café Oberkampf" value="Café Oberkampf">
-    </div>
-    <div class="field-group">
-      <label>Quand ?</label>
-      <input type="text" id="datetime" placeholder="Ex: Samedi à 14h" value="Samedi à 14h">
-    </div>
-  </div>
-
-  <hr class="divider">
-  <p class="section-title">🎨 Personnalisation</p>
-
-  <div class="field-group">
-    <label>Thème visuel</label>
-    <div class="theme-grid">
-      <div class="theme-opt selected" data-theme="rose"   onclick="selectTheme(this)">🌸 Rose</div>
-      <div class="theme-opt" data-theme="night"  onclick="selectTheme(this)">🌙 Nuit</div>
-      <div class="theme-opt" data-theme="sunset" onclick="selectTheme(this)">🌅 Sunset</div>
-      <div class="theme-opt" data-theme="garden" onclick="selectTheme(this)">🌿 Jardin</div>
-      <div class="theme-opt" data-theme="ocean"  onclick="selectTheme(this)">🌊 Océan</div>
-    </div>
-  </div>
-
-  <div class="field-group">
-    <label>Emoji principal</label>
-    <div class="emoji-grid" id="emoji-grid">
-      <div class="emoji-opt selected" data-e="☕" onclick="selectEmoji(this)">☕</div>
-      <div class="emoji-opt" data-e="🍷" onclick="selectEmoji(this)">🍷</div>
-      <div class="emoji-opt" data-e="🌹" onclick="selectEmoji(this)">🌹</div>
-      <div class="emoji-opt" data-e="🎬" onclick="selectEmoji(this)">🎬</div>
-      <div class="emoji-opt" data-e="🍕" onclick="selectEmoji(this)">🍕</div>
-      <div class="emoji-opt" data-e="🎡" onclick="selectEmoji(this)">🎡</div>
-      <div class="emoji-opt" data-e="🌊" onclick="selectEmoji(this)">🌊</div>
-      <div class="emoji-opt" data-e="🎶" onclick="selectEmoji(this)">🎶</div>
-      <div class="emoji-opt" data-e="🍣" onclick="selectEmoji(this)">🍣</div>
-      <div class="emoji-opt" data-e="🎠" onclick="selectEmoji(this)">🎠</div>
-    </div>
-  </div>
-
-  <div class="field-group">
-    <label>Texte du bouton OUI</label>
-    <input type="text" id="yesText" placeholder="Ex: Oui, avec plaisir !" value="Oui, avec plaisir ! 🥰">
-  </div>
-  <div class="field-group">
-    <label>Message après le OUI 🎉</label>
-    <input type="text" id="yesMsg" placeholder="Ex: Je savais que tu dirais oui !" value="Yesss ! Je savais que tu dirais oui ! 🎉">
-  </div>
-
-  <button class="preview-btn" onclick="switchTab('invite')">Voir l'invitation 💌</button>
-</div>
-
-<!-- ═══════════ INVITE ═══════════ -->
-<div id="invite">
-  <div class="invite-wrap theme-rose" id="invite-wrap">
-    <div class="floating-hearts" id="hearts"></div>
-
-    <button class="back-btn" onclick="switchTab('editor')">← Modifier</button>
-    <div class="no-counter" id="no-counter"></div>
-
-    <div class="invite-card" id="invite-card">
-      <span class="invite-emoji" id="iv-emoji">☕</span>
-      <div class="invite-badge" id="iv-badge">Une invitation de Thomas</div>
-      <div class="invite-question" id="iv-question">Tu veux aller prendre un verre avec moi ?</div>
-      <div class="invite-message" id="iv-message">J'ai pensé à toi en voyant ce café — je crois qu'il te plairait autant qu'il me plaît te voir sourire.</div>
-      <div class="details-row">
-        <div class="detail-chip">📍 <span id="iv-place">Café Oberkampf</span></div>
-        <div class="detail-chip">🗓 <span id="iv-date">Samedi à 14h</span></div>
-      </div>
-      <div class="btn-zone" id="btn-zone">
-        <button class="btn-yes" id="btn-yes" onclick="onYes()">Oui, avec plaisir ! 🥰</button>
-        <button class="btn-no" id="btn-no"
-          onmouseenter="runAway()"
-          ontouchstart="runAway(event)">Non merci</button>
-        <span class="escape-msg" id="escape-msg"></span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-  let theme = 'rose';
-  let emoji = '☕';
-  let noCount = 0;
-  let yesScale = 1;
-  let noPos = { x: 0, y: 0 };
-
-  // ── Switch tabs ──
-  function switchTab(tab) {
-    document.getElementById('tab-editor').classList.toggle('active', tab === 'editor');
-    document.getElementById('tab-invite').classList.toggle('active', tab === 'invite');
-    document.getElementById('editor').style.display = tab === 'editor' ? 'flex' : 'none';
-    document.getElementById('invite').style.display = tab === 'invite' ? 'block' : 'none';
-    if (tab === 'invite') { buildInvite(); }
-  }
-
-  function selectTheme(el) {
-    document.querySelectorAll('.theme-opt').forEach(e => e.classList.remove('selected'));
-    el.classList.add('selected');
-    theme = el.dataset.theme;
-  }
-
-  function selectEmoji(el) {
-    document.querySelectorAll('.emoji-opt').forEach(e => e.classList.remove('selected'));
-    el.classList.add('selected');
-    emoji = el.dataset.e;
-  }
-
-  // ── Build invite from editor values ──
-  function buildInvite() {
-    const g = id => document.getElementById(id).value.trim();
-    const from = g('from') || 'quelqu\'un';
-
-    document.getElementById('iv-emoji').textContent = emoji;
-    document.getElementById('iv-badge').textContent = 'Une invitation de ' + from;
-    document.getElementById('iv-question').textContent = g('question') || 'Tu veux sortir avec moi ?';
-    document.getElementById('iv-message').textContent = g('message');
-    document.getElementById('iv-place').textContent = g('place');
-    document.getElementById('iv-date').textContent = g('datetime');
-    document.getElementById('btn-yes').textContent = g('yesText') || 'Oui !';
-
-    const wrap = document.getElementById('invite-wrap');
-    wrap.className = 'invite-wrap theme-' + theme;
-
-    buildHearts();
-    resetButtons();
-  }
-
-  // ── Floating hearts ──
-  function buildHearts() {
-    const h = document.getElementById('hearts');
-    h.innerHTML = '';
-    const items = ['💕','✨','🌸','💫','❤️','🌷'];
-    for (let i = 0; i < 10; i++) {
-      const d = document.createElement('div');
-      d.className = 'fh';
-      d.textContent = items[i % items.length];
-      d.style.left = (5 + Math.random() * 90) + '%';
-      d.style.animationDelay = (Math.random() * 8) + 's';
-      d.style.animationDuration = (7 + Math.random() * 6) + 's';
-      d.style.fontSize = (14 + Math.random() * 14) + 'px';
-      h.appendChild(d);
-    }
-  }
-
-  // ── Reset buttons state ──
-  function resetButtons() {
-    noCount = 0; yesScale = 1; noPos = { x: 0, y: 0 };
-    const zone = document.getElementById('btn-zone');
-    zone.innerHTML = `
-      <button class="btn-yes" id="btn-yes" onclick="onYes()">${document.getElementById('yesText').value || 'Oui !'}</button>
-      <button class="btn-no" id="btn-no"
-        onmouseenter="runAway()"
-        ontouchstart="runAway(event)">Non merci</button>
-      <span class="escape-msg" id="escape-msg"></span>`;
-    document.getElementById('no-counter').textContent = '';
-  }
-
-  // ── NO button runs away ──
-  function runAway(e) {
-    if (e && e.preventDefault) e.preventDefault();
-    const no = document.getElementById('btn-no');
-    const yes = document.getElementById('btn-yes');
-    const zone = document.getElementById('btn-zone');
-    if (!no) return;
-    noCount++;
-
-    // YES grows
-    yesScale = Math.min(yesScale + 0.14, 2.4);
-    const newSize = Math.min(18 + noCount * 2.2, 36);
-    const newPad = Math.min(17 + noCount * 3, 36);
-    yes.style.transform = `scale(${yesScale})`;
-    yes.style.fontSize = newSize + 'px';
-    yes.style.padding = newPad + 'px ' + Math.min(40 + noCount * 4, 70) + 'px';
-
-    // NO moves
-    no.style.position = 'absolute';
-    const zRect = zone.getBoundingClientRect();
-    const noRect = no.getBoundingClientRect();
-    const safeW = zRect.width - noRect.width - 20;
-    const dx = (Math.random() - .5) * 280;
-    const dy = (Math.random() - .5) * 140;
-    noPos.x = Math.max(-safeW / 2, Math.min(safeW / 2, noPos.x + dx));
-    noPos.y = Math.max(-60, Math.min(60, noPos.y + dy));
-    no.style.transform = `translate(${noPos.x}px, ${noPos.y}px)`;
-    no.style.transition = 'transform .2s cubic-bezier(.22,.68,0,1.4)';
-
-    // Fades after 6 escapes
-    if (noCount > 5) no.style.opacity = Math.max(0, 1 - (noCount - 5) * 0.18) + '';
-
-    // Disappears after 12 escapes
-    if (noCount >= 12) {
-      no.style.display = 'none';
-      document.getElementById('no-counter').textContent = '😂 Le NON s\'est enfui pour toujours';
-      document.getElementById('escape-msg').textContent = 'Il n\'y a plus qu\'un seul choix possible...';
-    } else {
-      const msgs = [
-        '😏 Trop lent(e)...',
-        '😂 Encore raté !',
-        '🏃 Il court vite !',
-        '🎯 Si proche !',
-        '😅 Impossible !',
-        '✨ Abandonne !',
-      ];
-      document.getElementById('no-counter').textContent = msgs[noCount % msgs.length];
-    }
-  }
-
-  // ── YES clicked ──
-  function onYes() {
-    const yesMsg = document.getElementById('yesMsg').value || 'Yesss ! 🎉';
-    document.getElementById('btn-zone').innerHTML =
-      `<div class="yes-msg">${yesMsg}</div>`;
-    document.getElementById('no-counter').textContent = '';
-    launchConfetti();
-  }
-
-  // ── Confetti ──
-  function launchConfetti() {
-    const colors = ['#F5A8C0','#C94B7A','#FFD700','#FF6B8A','#A8D8F5','#98ECA8','#FFAA55','#CC88FF'];
-    for (let i = 0; i < 80; i++) {
-      const c = document.createElement('div');
-      c.className = 'confetti-piece';
-      c.style.left = (5 + Math.random() * 90) + 'vw';
-      c.style.top = '-20px';
-      c.style.background = colors[Math.floor(Math.random() * colors.length)];
-      c.style.borderRadius = Math.random() > .5 ? '50%' : '3px';
-      c.style.width  = (7 + Math.random() * 9) + 'px';
-      c.style.height = (7 + Math.random() * 9) + 'px';
-      c.style.animationDelay    = (Math.random() * 1.2) + 's';
-      c.style.animationDuration = (2.5 + Math.random() * 2) + 's';
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 5000);
-    }
-  }
-
-  // Init
-  document.getElementById('invite').style.display = 'none';
-</script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
